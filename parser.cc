@@ -71,25 +71,38 @@ void Parser::parse_scope_list()
     // scope_list -> scope scope_list
     // scope_list -> declaration scope_list
     
-    //TODO: needs testing
+    //TODO: comments 4,5 and 6
+
     Token t = peek();
-    if(t.token_type == stmt) {
+    if(t.token_type == ID || t.token_type == WHILE) {
 	parse_stmt();
 	t = peek();
-	if(t.token_type == scope_list)
+	if(t.token_type == ID || t.token_type == WHILE
+	|| t.token_type == TYPE || t.token_type == VAR
+	|| t.token_type == LBRACE) {
 	    parse_scope_list();
+	}
     }
-    if(t.token_type == scope) {
-	parse_scope();
- 	t = peek();
-	if(t.token_type == scope_list)
-	    parse_scope_list();
-    }
-    if(t.token_type == declaration) {
+
+    if(t.token_type == TYPE || t.token_type == VAR) {
 	parse_declaration();
-	t = peek();
-	if(t.token_type == scope_list)
-	    parse_scope_list();
+        
+	if(t.token_type == ID || t.token_type == WHILE
+        || t.token_type == TYPE || t.token_type == VAR
+        || t.token_type == LBRACE) {
+            parse_scope_list();
+        }
+    }
+
+    if(t.token_type == LBRACE) {
+	parse_scope_list();
+
+        if(t.token_type == ID || t.token_type == WHILE
+        || t.token_type == TYPE || t.token_type == VAR
+        || t.token_type == LBRACE) {
+            parse_scope_list();
+        }
+
     }
 }
 
@@ -228,7 +241,7 @@ void Parser::parse_condition()
 {
     // condition -> ID
     // condition -> primary relop primary
-
+    
     // TODO
 }
 
