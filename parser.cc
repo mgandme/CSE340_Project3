@@ -83,8 +83,7 @@ void Parser::parse_scope_list()
 	    parse_scope_list();
 	}
     }
-
-    if(t.token_type == TYPE || t.token_type == VAR) {
+    else if(t.token_type == TYPE || t.token_type == VAR) {
 	parse_declaration();
         
 	if(t.token_type == ID || t.token_type == WHILE
@@ -93,9 +92,8 @@ void Parser::parse_scope_list()
             parse_scope_list();
         }
     }
-
-    if(t.token_type == LBRACE) {
-	parse_scope_list();
+    else if(t.token_type == LBRACE) {
+	parse_scope();
 
         if(t.token_type == ID || t.token_type == WHILE
         || t.token_type == TYPE || t.token_type == VAR
@@ -103,6 +101,9 @@ void Parser::parse_scope_list()
             parse_scope_list();
         }
 
+    }
+    else {
+	syntax_error();
     }
 }
 
@@ -139,10 +140,14 @@ void Parser::parse_type_name()
     // type_name -> ID
     
 
-
-
-
     // TODO
+
+    Token t = lexer.GetToken();
+    if(t.token_type != REAL || t.token_type != INT ||
+    t.token_type != BOOLEAN || t.token_type != STRING ||
+    t.token_type != LONG || t.token_type != ID) {
+	syntax_error();
+    }
 }
 
 void Parser::parse_var_decl()
@@ -162,6 +167,12 @@ void Parser::parse_id_list()
     // id_list -> ID COMMA id_list
 
     // TODO
+    expect(ID);
+    Token t = peek();
+    if(t.token_type == COMMA) {
+	expect(COMMA);
+	parse_id_list();
+    }
 }
 
 
