@@ -70,13 +70,12 @@ void Parser::parse_scope_list()
     // scope_list -> stmt scope_list
     // scope_list -> scope scope_list
     // scope_list -> declaration scope_list
-    
-    //TODO: comments 4,5 and 6
 
     Token t = peek();
     if(t.token_type == ID || t.token_type == WHILE) {
 	parse_stmt();
 	t = peek();
+
 	if(t.token_type == ID || t.token_type == WHILE
 	|| t.token_type == TYPE || t.token_type == VAR
 	|| t.token_type == LBRACE) {
@@ -85,7 +84,8 @@ void Parser::parse_scope_list()
     }
     else if(t.token_type == TYPE || t.token_type == VAR) {
 	parse_declaration();
-        
+	t = peek();        
+
 	if(t.token_type == ID || t.token_type == WHILE
         || t.token_type == TYPE || t.token_type == VAR
         || t.token_type == LBRACE) {
@@ -94,7 +94,8 @@ void Parser::parse_scope_list()
     }
     else if(t.token_type == LBRACE) {
 	parse_scope();
-
+	t = peek();
+	
         if(t.token_type == ID || t.token_type == WHILE
         || t.token_type == TYPE || t.token_type == VAR
         || t.token_type == LBRACE) {
@@ -143,9 +144,9 @@ void Parser::parse_type_name()
     // TODO
 
     Token t = lexer.GetToken();
-    if(t.token_type != REAL || t.token_type != INT ||
-    t.token_type != BOOLEAN || t.token_type != STRING ||
-    t.token_type != LONG || t.token_type != ID) {
+    if(t.token_type != REAL && t.token_type != INT &&
+    t.token_type != BOOLEAN && t.token_type != STRING &&
+    t.token_type != LONG && t.token_type != ID) {
 	syntax_error();
     }
 }
