@@ -139,9 +139,6 @@ void Parser::parse_type_name()
     // type_name -> STRING
     // type_name -> LONG
     // type_name -> ID
-    
-
-    // TODO
 
     Token t = lexer.GetToken();
     if(t.token_type != REAL && t.token_type != INT &&
@@ -175,7 +172,7 @@ void Parser::parse_id_list()
 	parse_id_list();
     }
 }
-
+//--------------------------------------------------------------------------------
 
 
 void Parser::parse_stmt_list()
