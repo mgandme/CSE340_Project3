@@ -11,6 +11,25 @@
 #include <cstdlib>
 #include "parser.h"
 
+/*
+ *DATE : NOV. 4
+ *TIME : 9:56 AM
+ *
+ *
+ *PARSING        : 65 / 83
+ *
+ *Error Code 1.X : 0 / 12
+ *
+ *Error Code 2.X : 0 / 7
+ *
+ *Type Mismatch  : 0 / 20
+ *
+ *Semantic OK    : 0 / 22
+*/
+
+
+
+
 using namespace std;
 
 void Parser::syntax_error()
@@ -190,6 +209,8 @@ void Parser::parse_stmt_list()
     else if (t.token_type == RBRACE)
     {
         // stmt_list -> stmt
+	parse_stmt();//TODO : Not sure if this is right
+        
     }
     else
     {
@@ -202,7 +223,16 @@ void Parser::parse_stmt()
     // stmt -> assign_stmt
     // stmt -> while_stmt
  
-    // TODO
+    Token t = peek();
+    if(t.token_type == ID) {
+	parse_assign_stmt();
+    }
+    else if(t.token_type == WHILE) {
+	parse_while_stmt();
+    }
+    else {
+	syntax_error();
+    }
     
 }
 
@@ -210,14 +240,21 @@ void Parser::parse_assign_stmt()
 {
     // assign_stmt -> ID EQUAL expr SEMICOLON
 
-    // TODO
+    expect(ID);
+    expect(EQUAL);
+    parse_expr();
+    expect(SEMICOLON);
 }
 
 void Parser::parse_while_stmt()
 {
    // while_stmt -> WHILE condition LBRACE stmt list RBRACE
 
-    // TODO
+    expect(WHILE);
+    parse_condition();
+    expect(LBRACE);
+    parse_stmt_list();
+    expect(RBRACE);
 }
 
 void Parser::parse_expr()
@@ -225,7 +262,12 @@ void Parser::parse_expr()
     // expr -> term 
     // expr -> term + expr
 
-    // TODO
+    parse_term();
+    Token t = peek();
+    if(t.token_type == PLUS) {
+	lexer.GetToken();
+	parse_expr();
+    }
 }
 
 void Parser::parse_term()
@@ -233,7 +275,12 @@ void Parser::parse_term()
     // term -> factor
     // term -> factor MULT term
 
-    // TODO
+    parse_factor();
+    Token t = peek();
+    if(t.token_type == MULT) {
+	lexer.GetToken();
+	parse_term();
+    }
 }
 
 void Parser::parse_factor()
@@ -243,7 +290,24 @@ void Parser::parse_factor()
     // factor -> REALNUM
     // factor -> ID
 
-    // TODO
+    Token t = peek();
+    if(t.token_type == LPAREN) {
+	expect(LPAREN);
+	parse_expr();
+	expect(RPAREN);
+    }
+    else if(t.token_type == NUM) {
+	expect(NUM);
+    }
+    else if(t.token_type == REALNUM) {
+	expect(REALNUM);
+    }
+    else if(t.token_type == ID) {
+	expect(ID);
+    }
+    else {
+	syntax_error();
+    }
 }
 
 void Parser::parse_condition()
@@ -251,7 +315,25 @@ void Parser::parse_condition()
     // condition -> ID
     // condition -> primary relop primary
     
-    // TODO
+    Token t = peek();
+    if(t.token_type == NUM || t.token_type == REALNUM) {
+	parse_primary();
+	parse_relop();
+	parse_primary();
+    }
+    else if(t.token_type == ID) {
+	expect(ID);
+	t = peek();
+	if(t.token_type == GREATER || t.token_type == GTEQ ||
+	t.token_type == LESS || t.token_type == NOTEQUAL || 
+	t.token_type == LTEQ) {
+	    parse_relop();
+	    parse_primary();
+	} 
+    }
+    else {
+	syntax_error();
+    }
 }
 
 void Parser::parse_primary()
@@ -259,7 +341,19 @@ void Parser::parse_primary()
     // primary -> ID
     // primary -> NUM
     // primary -> REALNUM
-    // TODO
+    Token t = peek();
+    if(t.token_type == ID) {
+	expect(ID);
+    }
+    else if(t.token_type == NUM) {
+	expect(NUM);
+    }
+    else if(t.token_type == REALNUM) {
+	expect(REALNUM);
+    }
+    else {
+	syntax_error();
+    }
 }
 
 void Parser::parse_relop()
@@ -270,7 +364,25 @@ void Parser::parse_relop()
     // relop -> NOTEQ
     // relop -> LTEQ
 
-    // TODO
+    Token t = peek();
+    if(t.token_type == GREATER) {
+	expect(GREATER);
+    }
+    else if(t.token_type == GTEQ) {
+	expect(GTEQ);
+    }
+    else if(t.token_type == LESS) {
+        expect(LESS);
+    }
+    else if(t.token_type == NOTEQUAL) {
+	expect(NOTEQUAL);
+    }
+    else if(t.token_type == LTEQ) {
+	expect(LTEQ);
+    }
+    else {
+	syntax_error();
+    }
 }
 
 void Parser::ParseInput()
