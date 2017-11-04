@@ -13,10 +13,10 @@
 
 /*
  *DATE : NOV. 4
- *TIME : 9:56 AM
+ *TIME : 11:57 AM
  *
  *
- *PARSING        : 65 / 83
+ *PARSING        : 83 / 83
  *
  *Error Code 1.X : 0 / 12
  *
@@ -209,8 +209,7 @@ void Parser::parse_stmt_list()
     else if (t.token_type == RBRACE)
     {
         // stmt_list -> stmt
-	parse_stmt();//TODO : Not sure if this is right
-        
+	//parse_stmt();	
     }
     else
     {
