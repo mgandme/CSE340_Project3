@@ -1,3 +1,7 @@
 {
-	TYPE a,b, : INT;
+	VAR a : INT;
+
+	{
+		VAR B : STRING;
+        }
 }

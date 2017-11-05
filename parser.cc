@@ -10,7 +10,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "parser.h"
-
+#include "ScopeData.h"
 /*
  *DATE : NOV. 4
  *TIME : 11:57 AM
@@ -64,6 +64,11 @@ Token Parser::peek()
 
 // Parsing
 
+ScopeData *s;
+ScopeData *currScope;
+
+
+
 void Parser::parse_program()
 {
     // program -> scope
@@ -76,6 +81,23 @@ void Parser::parse_scope()
     // scope -> { scope_list }
     
     expect(LBRACE);
+    Token t = peek();
+    //cout << t.line_no << endl;
+    if(s == NULL) {
+        s = (ScopeData*) malloc(sizeof(ScopeData));
+        s->begOfScope = t.line_no;
+    }
+    else {
+	currScope = s;
+	while(currScope->next != NULL) {
+            currScope = currScope->next;
+        }
+        currScope->next = (ScopeData*) malloc(sizeof(ScopeData));
+        currScope = currScope->next;
+        currScope->begOfScope = t.line_no;
+    }
+
+
     parse_scope_list();
     expect(RBRACE);
 }
@@ -90,7 +112,9 @@ void Parser::parse_scope_list()
     // scope_list -> scope scope_list
     // scope_list -> declaration scope_list
 
+
     Token t = peek();
+
     if(t.token_type == ID || t.token_type == WHILE) {
 	parse_stmt();
 	t = peek();
@@ -395,5 +419,9 @@ int main()
     Parser parser;
 
     parser.ParseInput();
+    while(s != NULL) {
+	cout << s->begOfScope << endl;
+	s = s->next;
+    }
 }
 
