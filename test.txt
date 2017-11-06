@@ -1,7 +1,13 @@
 {
 	VAR a : INT;
 
-	{
-		VAR B : STRING;
-        }
+    { 
+        VAR B : STRING;
+        
+    }
+    
+    {
+  
+        VAR C : INT;
+    }
 }
