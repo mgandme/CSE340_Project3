@@ -80,24 +80,24 @@ void Parser::parse_scope()
 {
     // scope -> { scope_list }
     
-    expect(LBRACE);
+    
     Token t = peek();
-    //cout << t.line_no << endl;
-    if(s == NULL) {
-        s = (ScopeData*) malloc(sizeof(ScopeData));
-        s->begOfScope = t.line_no;
-    }
-    else {
-	currScope = s;
-	while(currScope->next != NULL) {
-            currScope = currScope->next;
+    if(t.token_type == LBRACE) {
+        if(s == NULL) {
+            s = (ScopeData*) malloc(sizeof(ScopeData));
+            s->begOfScope = t.line_no;
         }
-        currScope->next = (ScopeData*) malloc(sizeof(ScopeData));
-        currScope = currScope->next;
-        currScope->begOfScope = t.line_no;
+        else {
+	        currScope = s;
+	        while(currScope->next != NULL) {
+                currScope = currScope->next;
+            }
+            currScope->next = (ScopeData*) malloc(sizeof(ScopeData));
+            currScope = currScope->next;
+            currScope->begOfScope = t.line_no;
+        }
     }
-
-
+    expect(LBRACE);
     parse_scope_list();
     expect(RBRACE);
 }
