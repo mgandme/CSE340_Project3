@@ -80,26 +80,32 @@ void Parser::parse_scope()
 {
     // scope -> { scope_list }
     
-    
+    ScopeData *temp;  
     Token t = peek();
     if(t.token_type == LBRACE) {
         if(s == NULL) {
             s = (ScopeData*) malloc(sizeof(ScopeData));
             s->begOfScope = t.line_no;
+            temp = s;
         }
         else {
-	        currScope = s;
-	        while(currScope->next != NULL) {
-                currScope = currScope->next;
+	        temp = s;
+	        while(temp->next != NULL) {
+                temp = temp->next;
             }
-            currScope->next = (ScopeData*) malloc(sizeof(ScopeData));
-            currScope = currScope->next;
-            currScope->begOfScope = t.line_no;
+            temp->next = (ScopeData*) malloc(sizeof(ScopeData));
+            temp = temp->next;
+            temp->begOfScope = t.line_no;
+            //currScope = temp;
         }
     }
     expect(LBRACE);
     parse_scope_list();
+    t = peek();
+    temp->endOfScope = t.line_no;
     expect(RBRACE);
+    
+    //ending scope variable?
 }
 
 
@@ -421,6 +427,7 @@ int main()
     parser.ParseInput();
     while(s != NULL) {
 	cout << s->begOfScope << endl;
+	cout << s->endOfScope << endl;
 	s = s->next;
     }
 }

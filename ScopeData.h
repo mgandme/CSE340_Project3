@@ -20,6 +20,7 @@ class VariableList {
 class ScopeData {
   public:
     int begOfScope;
+    int endOfScope;
     //VariableList table;
     ScopeData *next;
     //InitScope();
