@@ -7,7 +7,8 @@
 #define __PARSER_H__
 
 #include <string>
-#include "lexer.h"
+//#include "lexer.h"
+#include "ScopeData.h"
 
 class Parser {
   private:
@@ -24,7 +25,7 @@ class Parser {
     void parse_type_decl();
     void parse_type_name();
     void parse_var_decl();
-    void parse_id_list();
+    VariableList* parse_id_list();
     void parse_stmt_list();
     void parse_stmt();
     void parse_assign_stmt();

@@ -8,9 +8,8 @@
 
 class VariableList {
     public:
-	string name;
-	TokenType type;
-	int line_decl;
+	std::string name;
+	Token tok;
 	VariableList *next;
 
 };

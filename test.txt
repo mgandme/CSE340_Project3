@@ -1,11 +1,4 @@
 {
 	VAR a : INT;
-	{
-		VAR B : STRING;
-    }
-    
-	{
-		VAR c : INT;
-	}
 
 }

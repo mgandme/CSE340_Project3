@@ -10,7 +10,7 @@
 #include <iostream>
 #include <cstdlib>
 #include "parser.h"
-#include "ScopeData.h"
+
 /*
  *DATE : NOV. 4
  *TIME : 11:57 AM
@@ -213,23 +213,25 @@ VariableList* Parser::parse_id_list()
 {
     // id_list -> ID
     // id_list -> ID COMMA id_list
-    Token curr = peek();
 
-    Token t = peek();
+    Token curr = peek();
+    VariableList *var;
 
     expect(ID);
     Token t = peek();
     if(t.token_type == COMMA) {
 	expect(COMMA);
-	currScope->table = parse_id_list();
-
-
-
+	var = (VariableList*) malloc (sizeof(VariableList));
+	var->next = parse_id_list();
+	var->tok = curr;
+        return var;
     }
     else {
-	VariableList *var = (VariableList*) malloc (sizeof(VariableList));
-        var->name = curr.lexeme;
-        var->line_decl = curr.line_no;
+	var = (VariableList*) malloc (sizeof(VariableList));
+        //cout << curr.lexeme << endl;
+	//var->tok.lexeme = "a";
+//        var->name = "a";
+	var->tok.lexeme = curr.lexeme;
 	return var;
     }
     
@@ -440,6 +442,7 @@ int main()
     while(s != NULL) {
 	cout << s->begOfScope << endl;
 	cout << s->endOfScope << endl;
+	//cout << (string)s->table->tok->lexeme;
 	s = s->next;
     }
 }
