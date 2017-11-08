@@ -5,23 +5,22 @@
 #include <string>
 #include "lexer.h"
 
-/*
+
 class VariableList {
     public:
 	string name;
-	string type;
+	TokenType type;
 	int line_decl;
-	std::vector<int> variableUses;
 	VariableList *next;
 
 };
-*/
+
 
 class ScopeData {
   public:
     int begOfScope;
     int endOfScope;
-    //VariableList table;
+    VariableList *table;
     ScopeData *next;
     //InitScope();
     //AddScope();

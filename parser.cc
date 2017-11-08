@@ -87,6 +87,7 @@ void Parser::parse_scope()
             s = (ScopeData*) malloc(sizeof(ScopeData));
             s->begOfScope = t.line_no;
             temp = s;
+	    currScope = s;
         }
         else {
 	        temp = s;
@@ -96,7 +97,7 @@ void Parser::parse_scope()
             temp->next = (ScopeData*) malloc(sizeof(ScopeData));
             temp = temp->next;
             temp->begOfScope = t.line_no;
-            //currScope = temp;
+            currScope = temp;
         }
     }
     expect(LBRACE);
@@ -202,26 +203,37 @@ void Parser::parse_var_decl()
     // var_decl -> VAR id_list COLON type_name SEMICOLON
 
     expect(VAR);
-    parse_id_list();
+    currScope->table = parse_id_list();
     expect(COLON);
     parse_type_name();
     expect(SEMICOLON);
 }
 
-void Parser::parse_id_list()
+VariableList* Parser::parse_id_list()
 {
     // id_list -> ID
     // id_list -> ID COMMA id_list
+    Token curr = peek();
 
-    // TODO
+    Token t = peek();
+
     expect(ID);
     Token t = peek();
     if(t.token_type == COMMA) {
 	expect(COMMA);
-	parse_id_list();
+	currScope->table = parse_id_list();
+
+
+
     }
+    else {
+	VariableList *var = (VariableList*) malloc (sizeof(VariableList));
+        var->name = curr.lexeme;
+        var->line_decl = curr.line_no;
+	return var;
+    }
+    
 }
-//--------------------------------------------------------------------------------
 
 
 void Parser::parse_stmt_list()
